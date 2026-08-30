@@ -1,5 +1,6 @@
 import { WORKOUTS, workoutForDay } from '../plan.js'
 import { lastSessionOf, countSets, fmtDate, daysAgo, todayStr, sessionOn } from '../store.js'
+import { isConfigured } from '../sync.js'
 
 export default function HomeScreen({ data, go }) {
   const now = new Date()
@@ -44,8 +45,8 @@ export default function HomeScreen({ data, go }) {
       <div className="spacer" />
 
       <button className="lastbox row-between" style={{ border: '1px dashed var(--line-2)', background: 'var(--surface-3)', cursor: 'pointer', color: 'inherit', font: 'inherit', width: '100%' }} onClick={() => go('settings')}>
-        <span>{lastSync ? '☁️ Synced to GitHub' : '☁️ GitHub sync not set up'}</span>
-        <span className="tag num">{lastSync || 'tap to set up'}</span>
+        <span>{lastSync ? '☁️ Synced to GitHub' : isConfigured() ? '☁️ GitHub sync ready' : '☁️ GitHub sync not set up'}</span>
+        <span className="tag num">{lastSync || (isConfigured() ? 'pushes on finish' : 'tap to set up')}</span>
       </button>
       <button className="btn ghost" onClick={() => go('stats')}>📈 Stats & history</button>
     </>
