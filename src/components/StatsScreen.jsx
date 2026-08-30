@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { statItems, historyFor, prFor, sortedSessions, countSets, fmtDate, fmtSet, streakWeeks, todayStr } from '../store.js'
+import { statItems, historyFor, prFor, sortedSessions, countSets, fmtDate, fmtSet, streakWeeks, todayStr, durationMin } from '../store.js'
 import { PLAN, findItem } from '../plan.js'
 
 export default function StatsScreen({ data, go }) {
@@ -65,7 +65,7 @@ export default function StatsScreen({ data, go }) {
           <div key={s.id}>
             <button className="setrow num" onClick={() => setExpanded(expanded === s.id ? null : s.id)}>
               <span>{fmtDate(s.date)} · {PLAN[s.workout]?.name}</span>
-              <span className="tag">{countSets(s)} sets {s.note ? '· note 📝' : ''} {expanded === s.id ? '▴' : '▾'}</span>
+              <span className="tag">{countSets(s)} sets{durationMin(s) ? ` · ${durationMin(s)} min` : ''} {s.note ? '· note 📝' : ''} {expanded === s.id ? '▴' : '▾'}</span>
             </button>
             {expanded === s.id && <SessionDetail session={s} />}
           </div>

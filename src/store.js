@@ -178,6 +178,12 @@ export function prFor(data, stat) {
   return pr
 }
 
+export function durationMin(session) {
+  if (!session.startedAt || !session.finishedAt) return null
+  const min = Math.round((session.finishedAt - session.startedAt) / 60000)
+  return min >= 1 && min <= 300 ? min : null
+}
+
 export function weekKey(dateStr) {
   const d = new Date(dateStr + 'T12:00:00')
   const day = (d.getDay() + 6) % 7 // Mon = 0

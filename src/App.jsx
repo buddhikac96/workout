@@ -50,15 +50,16 @@ export default function App() {
     update((d) => {
       const s = ensureSession(d, workoutId)
       const e = (s.entries[item.id] ||= item.type === 'superset' ? { rounds: [], note: '' } : { sets: [], note: '' })
+      // Edits keep the set's original timestamp; new sets are stamped now.
       if (item.type === 'superset') {
-        if (editIndex != null) e.rounds[editIndex][side] = set
+        if (editIndex != null) e.rounds[editIndex][side] = { ...set, t: e.rounds[editIndex][side]?.t }
         else {
-          if (side === 'a') e.rounds.push({ a: set, b: null })
-          else e.rounds[e.rounds.length - 1].b = set
+          if (side === 'a') e.rounds.push({ a: { ...set, t: Date.now() }, b: null })
+          else e.rounds[e.rounds.length - 1].b = { ...set, t: Date.now() }
         }
       } else {
-        if (editIndex != null) e.sets[editIndex] = set
-        else e.sets.push(set)
+        if (editIndex != null) e.sets[editIndex] = { ...set, t: e.sets[editIndex]?.t }
+        else e.sets.push({ ...set, t: Date.now() })
       }
       return d
     })
