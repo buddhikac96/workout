@@ -5,9 +5,7 @@ import HomeScreen from './components/HomeScreen.jsx'
 import WorkoutScreen from './components/WorkoutScreen.jsx'
 import ExerciseScreen from './components/ExerciseScreen.jsx'
 import StatsScreen from './components/StatsScreen.jsx'
-import SettingsScreen from './components/SettingsScreen.jsx'
 import TimerOverlay from './components/TimerOverlay.jsx'
-import { isConfigured, pushData } from './sync.js'
 
 export default function App() {
   const [data, setData] = useState(null)
@@ -89,7 +87,7 @@ export default function App() {
     })
   }
 
-  async function finishWorkout(workoutId, note) {
+  function finishWorkout(workoutId, note) {
     update((d) => {
       const s = sessionOn(d, workoutId, todayStr())
       if (s) {
@@ -99,18 +97,7 @@ export default function App() {
       return d
     })
     setNav({ screen: 'home' })
-    if (isConfigured() && navigator.onLine) {
-      try {
-        const fresh = await loadData()
-        const ts = await pushData(fresh)
-        update((d) => ((d.lastSync = ts), d))
-        showToast('☁️ Synced to GitHub')
-      } catch (err) {
-        showToast(`⚠ Sync failed: ${err.message}`)
-      }
-    } else {
-      showToast('✓ Workout saved on this phone')
-    }
+    showToast('✓ Workout saved')
   }
 
   function startRest(item, label) {
@@ -141,8 +128,7 @@ export default function App() {
           startRest={startRest}
         />
       )}
-      {nav.screen === 'stats' && <StatsScreen data={data} go={go} />}
-      {nav.screen === 'settings' && <SettingsScreen data={data} update={update} go={go} showToast={showToast} />}
+      {nav.screen === 'stats' && <StatsScreen data={data} update={update} go={go} showToast={showToast} />}
       {timer && <TimerOverlay seconds={timer.seconds} label={timer.label} onDone={() => setTimer(null)} />}
       {toast && <div className="toast">{toast}</div>}
     </div>

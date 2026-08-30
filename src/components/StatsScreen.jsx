@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { statItems, historyFor, prFor, sortedSessions, countSets, fmtDate, fmtSet, streakWeeks, todayStr, durationMin } from '../store.js'
 import { PLAN, findItem } from '../plan.js'
 
-export default function StatsScreen({ data, go }) {
+export default function StatsScreen({ data, update, go, showToast }) {
   const stats = statItems()
   const [selected, setSelected] = useState(stats[0])
   const [expanded, setExpanded] = useState(null)
@@ -71,7 +71,47 @@ export default function StatsScreen({ data, go }) {
           </div>
         ))}
       </div>
+
+      <BackupRow data={data} update={update} showToast={showToast} />
     </>
+  )
+}
+
+function BackupRow({ data, update, showToast }) {
+  function exportJson() {
+    const blob = new Blob([JSON.stringify({ sessions: data.sessions }, null, 2)], { type: 'application/json' })
+    const a = document.createElement('a')
+    a.href = URL.createObjectURL(blob)
+    a.download = `workout-backup-${todayStr()}.json`
+    a.click()
+    URL.revokeObjectURL(a.href)
+  }
+
+  function importJson(e) {
+    const file = e.target.files?.[0]
+    e.target.value = ''
+    if (!file) return
+    file.text().then((text) => {
+      const parsed = JSON.parse(text)
+      if (!Array.isArray(parsed.sessions)) throw new Error('bad file')
+      update((d) => {
+        const byId = new Map(d.sessions.map((s) => [s.id, s]))
+        for (const s of parsed.sessions) if (!byId.has(s.id)) byId.set(s.id, s)
+        d.sessions = [...byId.values()]
+        return d
+      })
+      showToast(`✓ Restored ${parsed.sessions.length} sessions from backup`)
+    }).catch(() => showToast('⚠ Not a valid backup file'))
+  }
+
+  return (
+    <div className="grid2">
+      <button className="btn ghost" onClick={exportJson}>⤓ Backup file</button>
+      <label className="btn ghost" style={{ textAlign: 'center' }}>
+        ⤒ Restore
+        <input type="file" accept="application/json,.json" hidden onChange={importJson} />
+      </label>
+    </div>
   )
 }
 

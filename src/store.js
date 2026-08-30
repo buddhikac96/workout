@@ -19,7 +19,7 @@ const DATA_KEY = 'workout-data-v1'
 //   lastSync: ms | null
 // }
 
-export const emptyData = () => ({ sessions: [], lastSync: null })
+export const emptyData = () => ({ sessions: [] })
 
 export async function loadData() {
   const data = await get(DATA_KEY)
