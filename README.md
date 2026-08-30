@@ -17,12 +17,16 @@ npm install
 npm run dev
 ```
 
-## Deploy (Netlify)
+## Deploy (GitHub Pages)
 
-1. Push this repo to GitHub (private is fine).
-2. On [netlify.com](https://app.netlify.com) → Add new site → Import from GitHub → pick this repo.
-   `netlify.toml` already sets the build (`npm run build` → `dist`).
-3. Open the site on your phone in Chrome → menu → **Add to Home screen**.
+The repo must be **public** (free plan). Every push to `main` (except `data.json` sync commits)
+builds and deploys via [.github/workflows/deploy.yml](.github/workflows/deploy.yml) to:
+
+**https://buddhikac96.github.io/workout/**
+
+Open that on your phone in Chrome → menu → **Add to Home screen**.
+
+(`netlify.toml` is kept as a fallback in case you ever switch hosting.)
 
 ## GitHub sync setup (one-time, on the phone)
 

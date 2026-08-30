@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
+  base: '/workout/',
   plugins: [
     react(),
     VitePWA({
@@ -12,6 +13,8 @@ export default defineConfig({
         name: 'Workout',
         short_name: 'Workout',
         description: 'Personal workout tracker',
+        start_url: '/workout/',
+        scope: '/workout/',
         theme_color: '#14171c',
         background_color: '#14171c',
         display: 'standalone',
